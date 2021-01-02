@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+      "module": "commonjs",
+      "target": "ESNext",
+      "moduleResolution": "node",
+      //"watch": true,
+      "noImplicitAny": true,
+      "removeComments": true,
+      "preserveConstEnums": true,
+      "sourceMap": true,
+      "outDir": "./js/"
+    },
+    "include": [
+        "./ts/*"
+    ]
+}

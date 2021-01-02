@@ -1,0 +1,12 @@
+{
+  "name": "KI_A_STAR",
+  "version": "1.0.0",
+  "description": "3D A* Algorithm",
+  "main": "index.js",
+  "author": "Lucas Schneider",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "fs": "^0.0.1-security"
+  }
+}
