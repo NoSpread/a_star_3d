@@ -1,12 +1,15 @@
 // nach wiki pseudocode
 import { i_coord, block_type, Path, i_Vector, i_Score, i_neighbors } from './header'
-import { CubeNode, PriorityQueue } from './class'
+import { CubeNode } from './class'
+import { PriorityQueue } from './PrioQ'
 import { pathToFileURL } from 'url'
 
 
 export function a_star(graph: i_coord, _start: CubeNode, _goal: CubeNode, h: any) {
 
-    const pq = new PriorityQueue()
+    //const pq = new PriorityQueue()
+    const pQ = new PriorityQueue<CubeNode>((a, b) => { return a.fScore < b.fScore })
+    const nodes: CubeNode[] = []
 
     const vector: i_Vector = {
         "x": 0,
@@ -23,51 +26,59 @@ export function a_star(graph: i_coord, _start: CubeNode, _goal: CubeNode, h: any
                     _start.fScore = CubeNode.manhatten(_start, _goal)
                     _start.neighbors = graph[_start.cString]
 
-                    pq.enqueue(_start)
+                    nodes.push(_start)
                 } else if (_goal.vectorCompare(vector)) {
                     _goal.neighbors = graph[_goal.cString]
 
-                    pq.enqueue(_goal)
+                    nodes.push(_goal)
                 } else {
                     const node = new CubeNode(vector)
                     if (graph[node.cString]) {
                         node.neighbors = graph[node.cString]
                     }
 
-                    pq.enqueue(node)
+                    nodes.push(node)
                 }
             }
         }
     }
 
 
-    while (pq.size > 0) {
+    pQ.push(...nodes)
 
-        const currNode = pq.dequeue()
+    while (pQ.size > 0) {
+
+        //const currNode = pq.dequeue()
+        const currNode = pQ.pop()
 
         if (currNode === _goal) {
             return pathTo(currNode)
         }
 
+
         currNode.closed = true
-        
+
         for (const neighborString of Object.keys(currNode.neighbors)) {
-            const neighbor = pq.find(neighborString)
+            const neighbor = nodes.find(node => {
+                return neighborString === node.cString
+            })
 
             if (!neighbor || neighbor.closed) continue
 
-            const gScore = currNode.gScore + 10 // real cost here from neighbor to curr
+            const gScore = currNode.gScore + 1 // real cost here from neighbor to curr
             const visited = neighbor.visited
 
             if (!visited || gScore < neighbor.gScore) {
                 neighbor.visited = true
                 neighbor.parent = currNode
-                neighbor.fScore = CubeNode.manhatten(neighbor, _goal)
+                // set neighbor.gScore = gScore
+                neighbor.fScore = CubeNode.manhatten(neighbor, _goal) // + gScore
             }
         }
 
-        pq.reSort()
+        pQ.rescore((a,b) => { return a.fScore - b.fScore})
     }
+
     return []
 }
 

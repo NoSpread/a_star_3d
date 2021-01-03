@@ -23,8 +23,8 @@ class CubeNode {
 
         this.coord_string = `${this.x},${this.y},${this.z}`
 
-        this.fScore = Number.MAX_VALUE
-        this.gScore = Number.MAX_VALUE
+        this.fScore = Number.MAX_SAFE_INTEGER
+        this.gScore = Number.MAX_SAFE_INTEGER
 
         this.visited = false
         this.closed = false

@@ -7,8 +7,8 @@ class CubeNode {
         this.y = vector.y;
         this.z = vector.z;
         this.coord_string = `${this.x},${this.y},${this.z}`;
-        this.fScore = Number.MAX_VALUE;
-        this.gScore = Number.MAX_VALUE;
+        this.fScore = Number.MAX_SAFE_INTEGER;
+        this.gScore = Number.MAX_SAFE_INTEGER;
         this.visited = false;
         this.closed = false;
         this.parent = null;
@@ -38,19 +38,6 @@ class PriorityQueue {
     get size() {
         return this.nodes.length;
     }
-    _enqueue(node) {
-        var contain = false;
-        for (var i = 0; i < this.nodes.length; i++) {
-            if (this.nodes[i].fScore > node.fScore) {
-                this.nodes.splice(i, 0, node);
-                contain = true;
-                break;
-            }
-        }
-        if (!contain) {
-            this.nodes.push(node);
-        }
-    }
     enqueue(node) {
         this.nodes.push(node);
         let index = this.nodes.length - 1;
@@ -66,11 +53,6 @@ class PriorityQueue {
             else
                 break;
         }
-    }
-    _dequeue() {
-        if (this.nodes.length === 0)
-            return null;
-        return this.nodes.shift();
     }
     dequeue() {
         const min = this.nodes[0];

@@ -8,5 +8,6 @@
   "private": true,
   "dependencies": {
     "fs": "^0.0.1-security"
-  }
+  },
+  "devDependencies": {}
 }

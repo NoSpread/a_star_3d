@@ -9,23 +9,23 @@ export class PriorityQueue<T> {
     private _heap: T[]
 
     constructor(comparator = (a: T, b: T) => a > b) {
-        this._heap = [];
+        this._heap = []
         this._comparator = comparator
     }
 
-    get size() {
+    get size(): number {
         return this._heap.length
     }
 
-    public isEmpty() {
+    get isEmpty(): boolean {
         return this.size == 0
     }
 
-    public peek() {
+    get peek(): T {
         return this._heap[_top]
     }
 
-    public push(...values: T[]) {
+    public push(...values: T[]): number {
         values.forEach((value: T) => {
             this._heap.push(value)
             this._siftUp()
@@ -33,8 +33,8 @@ export class PriorityQueue<T> {
         return this.size
     }
 
-    public pop() {
-        const poppedValue = this.peek()
+    public pop(): T {
+        const poppedValue = this.peek
         const bottom = this.size - 1
         if (bottom > _top) {
             this._swap(_top, bottom)
@@ -44,13 +44,17 @@ export class PriorityQueue<T> {
         return poppedValue
     }
 
-    public replace(value: T) {
-        const replacedValue = this.peek()
+    public replace(value: T): T {
+        const replacedValue = this.peek
         this._heap[_top] = value
         this._siftDown()
         return replacedValue
     }
-    
+
+    public rescore(fnSort: (a: T,b: T) => number): void {
+        this._heap.sort(fnSort)
+    }
+
     private _greater(i: number, j: number) {
         return this._comparator(this._heap[i], this._heap[j]);
     }

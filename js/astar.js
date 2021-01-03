@@ -2,8 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.a_star = void 0;
 const class_1 = require("./class");
+const PrioQ_1 = require("./PrioQ");
 function a_star(graph, _start, _goal, h) {
-    const pq = new class_1.PriorityQueue();
+    const pQ = new PrioQ_1.PriorityQueue((a, b) => { return a.fScore < b.fScore; });
+    const nodes = [];
     const vector = {
         "x": 0,
         "y": 0,
@@ -16,33 +18,36 @@ function a_star(graph, _start, _goal, h) {
                     _start.gScore = 0;
                     _start.fScore = class_1.CubeNode.manhatten(_start, _goal);
                     _start.neighbors = graph[_start.cString];
-                    pq._enqueue(_start);
+                    nodes.push(_start);
                 }
                 else if (_goal.vectorCompare(vector)) {
                     _goal.neighbors = graph[_goal.cString];
-                    pq._enqueue(_goal);
+                    nodes.push(_goal);
                 }
                 else {
                     const node = new class_1.CubeNode(vector);
                     if (graph[node.cString]) {
                         node.neighbors = graph[node.cString];
                     }
-                    pq._enqueue(node);
+                    nodes.push(node);
                 }
             }
         }
     }
-    while (pq.size > 0) {
-        const currNode = pq._dequeue();
+    pQ.push(...nodes);
+    while (pQ.size > 0) {
+        const currNode = pQ.pop();
         if (currNode === _goal) {
             return pathTo(currNode);
         }
         currNode.closed = true;
         for (const neighborString of Object.keys(currNode.neighbors)) {
-            const neighbor = pq.find(neighborString);
+            const neighbor = nodes.find(node => {
+                return neighborString === node.cString;
+            });
             if (!neighbor || neighbor.closed)
                 continue;
-            const gScore = currNode.gScore + 10;
+            const gScore = currNode.gScore + 1;
             const visited = neighbor.visited;
             if (!visited || gScore < neighbor.gScore) {
                 neighbor.visited = true;
@@ -50,7 +55,7 @@ function a_star(graph, _start, _goal, h) {
                 neighbor.fScore = class_1.CubeNode.manhatten(neighbor, _goal);
             }
         }
-        pq.reSort();
+        pQ.rescore((a, b) => { return a.fScore - b.fScore; });
     }
     return [];
 }

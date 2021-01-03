@@ -1,0 +1,448 @@
+diff --git a/js/astar.js b/js/astar.js
+index 973f682..d04a19e 100644
+--- a/js/astar.js
++++ b/js/astar.js
+@@ -2,8 +2,10 @@
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.a_star = void 0;
+ const class_1 = require("./class");
++const PrioQ_1 = require("./PrioQ");
+ function a_star(graph, _start, _goal, h) {
+-    const pq = new class_1.PriorityQueue();
++    const pq = new PrioQ_1.PriorityQueue((a, b) => { return a.fScore < b.fScore; });
++    const nodes = [];
+     const vector = {
+         "x": 0,
+         "y": 0,
+@@ -16,30 +18,33 @@ function a_star(graph, _start, _goal, h) {
+                     _start.gScore = 0;
+                     _start.fScore = class_1.CubeNode.manhatten(_start, _goal);
+                     _start.neighbors = graph[_start.cString];
+-                    pq._enqueue(_start);
++                    nodes.push(_start);
+                 }
+                 else if (_goal.vectorCompare(vector)) {
+                     _goal.neighbors = graph[_goal.cString];
+-                    pq._enqueue(_goal);
++                    nodes.push(_goal);
+                 }
+                 else {
+-                    const node = new class_1.CubeNode(vector);
+-                    if (graph[node.cString]) {
+-                        node.neighbors = graph[node.cString];
++                    const _node = new class_1.CubeNode(vector);
++                    if (graph[_node.cString]) {
++                        _node.neighbors = graph[_node.cString];
+                     }
+-                    pq._enqueue(node);
++                    nodes.push(_node);
+                 }
+             }
+         }
+     }
++    pq.push(...nodes);
+     while (pq.size > 0) {
+-        const currNode = pq._dequeue();
++        const currNode = pq.pop();
+         if (currNode === _goal) {
+             return pathTo(currNode);
+         }
+         currNode.closed = true;
+         for (const neighborString of Object.keys(currNode.neighbors)) {
+-            const neighbor = pq.find(neighborString);
++            const neighbor = nodes.find(node => {
++                return neighborString === node.cString;
++            });
+             if (!neighbor || neighbor.closed)
+                 continue;
+             const gScore = currNode.gScore + 10;
+@@ -47,10 +52,11 @@ function a_star(graph, _start, _goal, h) {
+             if (!visited || gScore < neighbor.gScore) {
+                 neighbor.visited = true;
+                 neighbor.parent = currNode;
+-                neighbor.fScore = class_1.CubeNode.manhatten(neighbor, _goal);
++                neighbor.gScore = gScore;
++                neighbor.fScore = class_1.CubeNode.manhatten(neighbor, _goal) + neighbor.gScore;
+             }
+         }
+-        pq.reSort();
++        pq.rescore((a, b) => { return a.fScore - b.fScore; });
+     }
+     return [];
+ }
+diff --git a/js/astar.js.map b/js/astar.js.map
+index 2bf35da..654ce54 100644
+--- a/js/astar.js.map
++++ b/js/astar.js.map
+@@ -1 +1 @@
+-{"version":3,"file":"astar.js","sourceRoot":"","sources":["../ts/astar.ts"],"names":[],"mappings":"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"}
+\ No newline at end of file
++{"version":3,"file":"astar.js","sourceRoot":"","sources":["../ts/astar.ts"],"names":[],"mappings":"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"}
+\ No newline at end of file
+diff --git a/js/class.js b/js/class.js
+index 59c2a66..c828ddb 100644
+--- a/js/class.js
++++ b/js/class.js
+@@ -7,8 +7,8 @@ class CubeNode {
+         this.y = vector.y;
+         this.z = vector.z;
+         this.coord_string = `${this.x},${this.y},${this.z}`;
+-        this.fScore = Number.MAX_VALUE;
+-        this.gScore = Number.MAX_VALUE;
++        this.fScore = Number.MAX_SAFE_INTEGER;
++        this.gScore = Number.MAX_SAFE_INTEGER;
+         this.visited = false;
+         this.closed = false;
+         this.parent = null;
+@@ -38,19 +38,6 @@ class PriorityQueue {
+     get size() {
+         return this.nodes.length;
+     }
+-    _enqueue(node) {
+-        var contain = false;
+-        for (var i = 0; i < this.nodes.length; i++) {
+-            if (this.nodes[i].fScore > node.fScore) {
+-                this.nodes.splice(i, 0, node);
+-                contain = true;
+-                break;
+-            }
+-        }
+-        if (!contain) {
+-            this.nodes.push(node);
+-        }
+-    }
+     enqueue(node) {
+         this.nodes.push(node);
+         let index = this.nodes.length - 1;
+@@ -67,11 +54,6 @@ class PriorityQueue {
+                 break;
+         }
+     }
+-    _dequeue() {
+-        if (this.nodes.length === 0)
+-            return null;
+-        return this.nodes.shift();
+-    }
+     dequeue() {
+         const min = this.nodes[0];
+         const end = this.nodes.pop();
+diff --git a/js/class.js.map b/js/class.js.map
+index 6279869..dd72373 100644
+--- a/js/class.js.map
++++ b/js/class.js.map
+@@ -1 +1 @@
+-{"version":3,"file":"class.js","sourceRoot":"","sources":["../ts/class.ts"],"names":[],"mappings":"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"}
+\ No newline at end of file
++{"version":3,"file":"class.js","sourceRoot":"","sources":["../ts/class.ts"],"names":[],"mappings":"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"}
+\ No newline at end of file
+diff --git a/js/test.js b/js/test.js
+index 64d04e1..2da89c3 100644
+--- a/js/test.js
++++ b/js/test.js
+@@ -1,7 +1,8 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+ const class_1 = require("./class");
+-const pq = new class_1.PriorityQueue();
++const PrioQ_1 = require("./PrioQ");
++const arr = [];
+ const vector = {
+     "x": 0,
+     "y": 0,
+@@ -13,36 +14,32 @@ const start = {
+     z: 3
+ };
+ const _start = new class_1.CubeNode(start);
+-const __start = new class_1.CubeNode(start);
+-if (_start === __start) {
+-    console.log("test");
+-}
+ const end = {
+     x: 0,
+     y: 0,
+     z: 0
+ };
+ const _goal = new class_1.CubeNode(end);
+-for (vector.x = 0; vector.x <= 5; vector.x++) {
+-    for (vector.y = 0; vector.y <= 5; vector.y++) {
+-        for (vector.z = 0; vector.z <= 5; vector.z++) {
++for (vector.x = -5; vector.x <= 5; vector.x++) {
++    for (vector.y = -5; vector.y <= 5; vector.y++) {
++        for (vector.z = -5; vector.z <= 5; vector.z++) {
+             if (_start.vectorCompare(vector)) {
+                 _start.gScore = 0;
+                 _start.fScore = class_1.CubeNode.manhatten(_start, _goal);
+-                pq.enqueue(_start);
++                arr.push(_start);
+             }
+             else if (_goal.vectorCompare(vector)) {
+-                pq.enqueue(_goal);
++                arr.push(_goal);
+             }
+             else {
+                 const node = new class_1.CubeNode(vector);
+-                pq.enqueue(node);
++                arr.push(node);
+             }
+         }
+     }
+ }
+-const __goal = pq.find(_goal.cString);
+-__goal.fScore = 10;
+-pq.dequeue();
++const pq = new PrioQ_1.PriorityQueue((a, b) => { return a.fScore < b.fScore; });
++pq.push(...arr);
++_goal.fScore = 1;
+ console.log("test");
+ //# sourceMappingURL=test.js.map
+\ No newline at end of file
+diff --git a/js/test.js.map b/js/test.js.map
+index 0b5e82d..90e219d 100644
+--- a/js/test.js.map
++++ b/js/test.js.map
+@@ -1 +1 @@
+-{"version":3,"file":"test.js","sourceRoot":"","sources":["../ts/test.ts"],"names":[],"mappings":";;AACA,mCAAiD;AAGjD,MAAM,EAAE,GAAG,IAAI,qBAAa,EAAE,CAAA;AAE9B,MAAM,MAAM,GAAa;IACrB,GAAG,EAAE,CAAC;IACN,GAAG,EAAE,CAAC;IACN,GAAG,EAAE,CAAC;CACT,CAAA;AAED,MAAM,KAAK,GAAG;IACV,CAAC,EAAE,CAAC,CAAC;IACL,CAAC,EAAE,CAAC,CAAC;IACL,CAAC,EAAE,CAAC;CACP,CAAA;AACD,MAAM,MAAM,GAAG,IAAI,gBAAQ,CAAC,KAAK,CAAC,CAAA;AAClC,MAAM,OAAO,GAAG,IAAI,gBAAQ,CAAC,KAAK,CAAC,CAAA;AAEnC,IAAI,MAAM,KAAK,OAAO,EAAE;IACpB,OAAO,CAAC,GAAG,CAAC,MAAM,CAAC,CAAA;CACtB;AAGD,MAAM,GAAG,GAAG;IACR,CAAC,EAAE,CAAC;IACJ,CAAC,EAAE,CAAC;IACJ,CAAC,EAAE,CAAC;CACP,CAAA;AACD,MAAM,KAAK,GAAG,IAAI,gBAAQ,CAAC,GAAG,CAAC,CAAA;AAE/B,KAAK,MAAM,CAAC,CAAC,GAAG,CAAC,EAAE,MAAM,CAAC,CAAC,IAAI,CAAC,EAAE,MAAM,CAAC,CAAC,EAAE,EAAE;IAC1C,KAAK,MAAM,CAAC,CAAC,GAAG,CAAC,EAAE,MAAM,CAAC,CAAC,IAAI,CAAC,EAAE,MAAM,CAAC,CAAC,EAAE,EAAE;QAC1C,KAAK,MAAM,CAAC,CAAC,GAAG,CAAC,EAAE,MAAM,CAAC,CAAC,IAAI,CAAC,EAAE,MAAM,CAAC,CAAC,EAAE,EAAE;YAE1C,IAAI,MAAM,CAAC,aAAa,CAAC,MAAM,CAAC,EAAE;gBAC9B,MAAM,CAAC,MAAM,GAAG,CAAC,CAAA;gBACjB,MAAM,CAAC,MAAM,GAAG,gBAAQ,CAAC,SAAS,CAAC,MAAM,EAAE,KAAK,CAAC,CAAA;gBACjD,EAAE,CAAC,OAAO,CAAC,MAAM,CAAC,CAAA;aACrB;iBAAM,IAAI,KAAK,CAAC,aAAa,CAAC,MAAM,CAAC,EAAE;gBACpC,EAAE,CAAC,OAAO,CAAC,KAAK,CAAC,CAAA;aACpB;iBAAM;gBACH,MAAM,IAAI,GAAG,IAAI,gBAAQ,CAAC,MAAM,CAAC,CAAA;gBACjC,EAAE,CAAC,OAAO,CAAC,IAAI,CAAC,CAAA;aACnB;SACJ;KACJ;CACJ;AAGD,MAAM,MAAM,GAAG,EAAE,CAAC,IAAI,CAAC,KAAK,CAAC,OAAO,CAAC,CAAA;AAErC,MAAM,CAAC,MAAM,GAAG,EAAE,CAAA;AAElB,EAAE,CAAC,OAAO,EAAE,CAAA;AAEZ,OAAO,CAAC,GAAG,CAAC,MAAM,CAAC,CAAA"}
+\ No newline at end of file
++{"version":3,"file":"test.js","sourceRoot":"","sources":["../ts/test.ts"],"names":[],"mappings":";;AACA,mCAAkC;AAClC,mCAAqC;AAGrC,MAAM,GAAG,GAAe,EAAE,CAAA;AAE1B,MAAM,MAAM,GAAa;IACrB,GAAG,EAAE,CAAC;IACN,GAAG,EAAE,CAAC;IACN,GAAG,EAAE,CAAC;CACT,CAAA;AAED,MAAM,KAAK,GAAG;IACV,CAAC,EAAE,CAAC,CAAC;IACL,CAAC,EAAE,CAAC,CAAC;IACL,CAAC,EAAE,CAAC;CACP,CAAA;AACD,MAAM,MAAM,GAAG,IAAI,gBAAQ,CAAC,KAAK,CAAC,CAAA;AAElC,MAAM,GAAG,GAAG;IACR,CAAC,EAAE,CAAC;IACJ,CAAC,EAAE,CAAC;IACJ,CAAC,EAAE,CAAC;CACP,CAAA;AACD,MAAM,KAAK,GAAG,IAAI,gBAAQ,CAAC,GAAG,CAAC,CAAA;AAE/B,KAAK,MAAM,CAAC,CAAC,GAAG,CAAC,CAAC,EAAE,MAAM,CAAC,CAAC,IAAI,CAAC,EAAE,MAAM,CAAC,CAAC,EAAE,EAAE;IAC3C,KAAK,MAAM,CAAC,CAAC,GAAG,CAAC,CAAC,EAAE,MAAM,CAAC,CAAC,IAAI,CAAC,EAAE,MAAM,CAAC,CAAC,EAAE,EAAE;QAC3C,KAAK,MAAM,CAAC,CAAC,GAAG,CAAC,CAAC,EAAE,MAAM,CAAC,CAAC,IAAI,CAAC,EAAE,MAAM,CAAC,CAAC,EAAE,EAAE;YAE3C,IAAI,MAAM,CAAC,aAAa,CAAC,MAAM,CAAC,EAAE;gBAC9B,MAAM,CAAC,MAAM,GAAG,CAAC,CAAA;gBACjB,MAAM,CAAC,MAAM,GAAG,gBAAQ,CAAC,SAAS,CAAC,MAAM,EAAE,KAAK,CAAC,CAAA;gBACjD,GAAG,CAAC,IAAI,CAAC,MAAM,CAAC,CAAA;aACnB;iBAAM,IAAI,KAAK,CAAC,aAAa,CAAC,MAAM,CAAC,EAAE;gBACpC,GAAG,CAAC,IAAI,CAAC,KAAK,CAAC,CAAA;aAClB;iBAAM;gBACH,MAAM,IAAI,GAAG,IAAI,gBAAQ,CAAC,MAAM,CAAC,CAAA;gBACjC,GAAG,CAAC,IAAI,CAAC,IAAI,CAAC,CAAA;aACjB;SACJ;KACJ;CACJ;AAED,MAAM,EAAE,GAAG,IAAI,qBAAa,CAAW,CAAC,CAAC,EAAE,CAAC,EAAE,EAAE,GAAE,OAAO,CAAC,CAAC,MAAM,GAAG,CAAC,CAAC,MAAM,CAAA,CAAA,CAAC,CAAC,CAAA;AAE9E,EAAE,CAAC,IAAI,CAAC,GAAG,GAAG,CAAC,CAAA;AAEf,KAAK,CAAC,MAAM,GAAG,CAAC,CAAA;AAIhB,OAAO,CAAC,GAAG,CAAC,MAAM,CAAC,CAAA"}
+\ No newline at end of file
+diff --git a/package.json b/package.json
+index 17d0a06..e062988 100644
+--- a/package.json
++++ b/package.json
+@@ -8,5 +8,6 @@
+   "private": true,
+   "dependencies": {
+     "fs": "^0.0.1-security"
+-  }
++  },
++  "devDependencies": {}
+ }
+diff --git a/ts/PrioQ.ts b/ts/PrioQ.ts
+index bdafe6b..4669800 100644
+--- a/ts/PrioQ.ts
++++ b/ts/PrioQ.ts
+@@ -9,23 +9,23 @@ export class PriorityQueue<T> {
+     private _heap: T[]
+ 
+     constructor(comparator = (a: T, b: T) => a > b) {
+-        this._heap = [];
++        this._heap = []
+         this._comparator = comparator
+     }
+ 
+-    get size() {
++    get size(): number {
+         return this._heap.length
+     }
+ 
+-    public isEmpty() {
++    get isEmpty(): boolean {
+         return this.size == 0
+     }
+ 
+-    public peek() {
++    get peek(): T {
+         return this._heap[_top]
+     }
+ 
+-    public push(...values: T[]) {
++    public push(...values: T[]): number {
+         values.forEach((value: T) => {
+             this._heap.push(value)
+             this._siftUp()
+@@ -33,8 +33,8 @@ export class PriorityQueue<T> {
+         return this.size
+     }
+ 
+-    public pop() {
+-        const poppedValue = this.peek()
++    public pop(): T {
++        const poppedValue = this.peek
+         const bottom = this.size - 1
+         if (bottom > _top) {
+             this._swap(_top, bottom)
+@@ -44,13 +44,17 @@ export class PriorityQueue<T> {
+         return poppedValue
+     }
+ 
+-    public replace(value: T) {
+-        const replacedValue = this.peek()
++    public replace(value: T): T {
++        const replacedValue = this.peek
+         this._heap[_top] = value
+         this._siftDown()
+         return replacedValue
+     }
+-    
++
++    public rescore(fnSort: (a: T,b: T) => number): void {
++        this._heap.sort(fnSort)
++    }
++
+     private _greater(i: number, j: number) {
+         return this._comparator(this._heap[i], this._heap[j]);
+     }
+diff --git a/ts/astar.ts b/ts/astar.ts
+index 38e2a5b..4929ad3 100644
+--- a/ts/astar.ts
++++ b/ts/astar.ts
+@@ -1,12 +1,14 @@
+ // nach wiki pseudocode
+ import { i_coord, block_type, Path, i_Vector, i_Score, i_neighbors } from './header'
+-import { CubeNode, PriorityQueue } from './class'
++import { CubeNode } from './class'
++import { PriorityQueue } from './PrioQ'
+ import { pathToFileURL } from 'url'
+ 
+ 
+ export function a_star(graph: i_coord, _start: CubeNode, _goal: CubeNode, h: any) {
+ 
+-    const pq = new PriorityQueue()
++    const pq = new PriorityQueue<CubeNode>((a, b) => { return a.fScore < b.fScore })
++    const nodes: CubeNode[] = []
+ 
+     const vector: i_Vector = {
+         "x": 0,
+@@ -23,36 +25,39 @@ export function a_star(graph: i_coord, _start: CubeNode, _goal: CubeNode, h: any
+                     _start.fScore = CubeNode.manhatten(_start, _goal)
+                     _start.neighbors = graph[_start.cString]
+ 
+-                    pq.enqueue(_start)
++                    nodes.push(_start)
+                 } else if (_goal.vectorCompare(vector)) {
+                     _goal.neighbors = graph[_goal.cString]
+ 
+-                    pq.enqueue(_goal)
++                    nodes.push(_goal)
+                 } else {
+-                    const node = new CubeNode(vector)
+-                    if (graph[node.cString]) {
+-                        node.neighbors = graph[node.cString]
++                    const _node = new CubeNode(vector)
++                    if (graph[_node.cString]) {
++                        _node.neighbors = graph[_node.cString]
+                     }
+ 
+-                    pq.enqueue(node)
++                    nodes.push(_node)
+                 }
+             }
+         }
+     }
+ 
++    pq.push(...nodes)
+ 
+     while (pq.size > 0) {
+ 
+-        const currNode = pq.dequeue()
++        const currNode = pq.pop()
+ 
+         if (currNode === _goal) {
+             return pathTo(currNode)
+         }
+ 
+         currNode.closed = true
+-        
++
+         for (const neighborString of Object.keys(currNode.neighbors)) {
+-            const neighbor = pq.find(neighborString)
++            const neighbor = nodes.find(node => {
++                return neighborString === node.cString
++            })
+ 
+             if (!neighbor || neighbor.closed) continue
+ 
+@@ -62,11 +67,12 @@ export function a_star(graph: i_coord, _start: CubeNode, _goal: CubeNode, h: any
+             if (!visited || gScore < neighbor.gScore) {
+                 neighbor.visited = true
+                 neighbor.parent = currNode
+-                neighbor.fScore = CubeNode.manhatten(neighbor, _goal)
++                neighbor.gScore = gScore
++                neighbor.fScore = CubeNode.manhatten(neighbor, _goal) + neighbor.gScore
+             }
+         }
++        pq.rescore((a,b) => { return a.fScore - b.fScore})
+ 
+-        pq.reSort()
+     }
+     return []
+ }
+diff --git a/ts/class.ts b/ts/class.ts
+index f6c7308..be4edf6 100644
+--- a/ts/class.ts
++++ b/ts/class.ts
+@@ -23,8 +23,8 @@ class CubeNode {
+ 
+         this.coord_string = `${this.x},${this.y},${this.z}`
+ 
+-        this.fScore = Number.MAX_VALUE
+-        this.gScore = Number.MAX_VALUE
++        this.fScore = Number.MAX_SAFE_INTEGER
++        this.gScore = Number.MAX_SAFE_INTEGER
+ 
+         this.visited = false
+         this.closed = false
+diff --git a/ts/test.ts b/ts/test.ts
+index 57be7e5..c5ba972 100644
+--- a/ts/test.ts
++++ b/ts/test.ts
+@@ -3,7 +3,7 @@ import { CubeNode } from './class'
+ import {PriorityQueue} from './PrioQ'
+ import {i_coord, block_type, Path, i_Vector, i_Score} from './header'
+ 
+-const pq = new PriorityQueue<CubeNode>((a, b) => { return a.fScore < b.fScore})
++const arr: CubeNode[] = []
+ 
+ const vector: i_Vector = {
+     "x": 0,
+@@ -17,12 +17,6 @@ const start = {
+     z: 3
+ }
+ const _start = new CubeNode(start)
+-const __start = new CubeNode(start)
+-
+-if (_start === __start) {
+-    console.log("test")
+-}
+-
+ 
+ const end = {
+     x: 0,
+@@ -31,23 +25,30 @@ const end = {
+ }
+ const _goal = new CubeNode(end)
+ 
+-for (vector.x = 0; vector.x <= 5; vector.x++) {
+-    for (vector.y = 0; vector.y <= 5; vector.y++) {
+-        for (vector.z = 0; vector.z <= 5; vector.z++) {
++for (vector.x = -5; vector.x <= 5; vector.x++) {
++    for (vector.y = -5; vector.y <= 5; vector.y++) {
++        for (vector.z = -5; vector.z <= 5; vector.z++) {
+ 
+             if (_start.vectorCompare(vector)) {
+                 _start.gScore = 0
+                 _start.fScore = CubeNode.manhatten(_start, _goal)
+-                pq.push(_start)
++                arr.push(_start)
+             } else if (_goal.vectorCompare(vector)) {
+-                pq.push(_goal)
++                arr.push(_goal)
+             } else {
+                 const node = new CubeNode(vector)
+-                pq.push(node)
++                arr.push(node)
+             }
+         }
+     }
+ }
+ 
++const pq = new PriorityQueue<CubeNode>((a, b) => {return a.fScore < b.fScore})
++
++pq.push(...arr)
++
++_goal.fScore = 1
++
++//pq.rescore(_goal)
+ 
+ console.log("test")
+\ No newline at end of file
