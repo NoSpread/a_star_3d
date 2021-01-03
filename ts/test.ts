@@ -1,6 +1,6 @@
 
-import { CubeNode } from './class'
-import {PriorityQueue} from './PrioQ'
+import { CubeNode } from './CubeNode'
+import {PriorityQueue} from './PriorityQueue'
 import {i_coord, block_type, Path, i_Vector, i_Score} from './header'
 
 const arr: CubeNode[] = []

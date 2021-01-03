@@ -1,6 +1,6 @@
 import { import_data } from './parse'
 import { a_star } from './astar'
-import { CubeNode, PriorityQueue } from './class'
+import { CubeNode } from './CubeNode'
 
 const data = import_data('data/S1_borg_cube.csv')
 //console.log(data)

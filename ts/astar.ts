@@ -1,9 +1,7 @@
 // nach wiki pseudocode
 import { i_coord, block_type, Path, i_Vector, i_Score, i_neighbors } from './header'
-import { CubeNode } from './class'
-import { PriorityQueue } from './PrioQ'
-import { pathToFileURL } from 'url'
-
+import { CubeNode } from './CubeNode'
+import { PriorityQueue } from './PriorityQueue'
 
 export function a_star(graph: i_coord, _start: CubeNode, _goal: CubeNode, h: any) {
 

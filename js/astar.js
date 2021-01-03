@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.a_star = void 0;
-const class_1 = require("./class");
-const PrioQ_1 = require("./PrioQ");
+const CubeNode_1 = require("./CubeNode");
+const PriorityQueue_1 = require("./PriorityQueue");
 function a_star(graph, _start, _goal, h) {
-    const pQ = new PrioQ_1.PriorityQueue((a, b) => { return a.fScore < b.fScore; });
+    const pQ = new PriorityQueue_1.PriorityQueue((a, b) => { return a.fScore < b.fScore; });
     const nodes = [];
     const vector = {
         "x": 0,
@@ -16,7 +16,7 @@ function a_star(graph, _start, _goal, h) {
             for (vector.z = -15; vector.z <= 15; vector.z++) {
                 if (_start.vectorCompare(vector)) {
                     _start.gScore = 0;
-                    _start.fScore = class_1.CubeNode.manhattan(_start, _goal);
+                    _start.fScore = CubeNode_1.CubeNode.manhattan(_start, _goal);
                     _start.neighbors = graph[_start.cString];
                     nodes.push(_start);
                 }
@@ -25,7 +25,7 @@ function a_star(graph, _start, _goal, h) {
                     nodes.push(_goal);
                 }
                 else {
-                    const node = new class_1.CubeNode(vector);
+                    const node = new CubeNode_1.CubeNode(vector);
                     if (graph[node.cString]) {
                         node.neighbors = graph[node.cString];
                     }
@@ -52,7 +52,7 @@ function a_star(graph, _start, _goal, h) {
             if (!visited || gScore < neighbor.gScore) {
                 neighbor.visited = true;
                 neighbor.parent = currNode;
-                neighbor.heuristic = neighbor.heuristic || class_1.CubeNode.manhattan(neighbor, _goal);
+                neighbor.heuristic = neighbor.heuristic || CubeNode_1.CubeNode.manhattan(neighbor, _goal);
                 neighbor.gScore = gScore;
                 neighbor.fScore = neighbor.gScore + neighbor.heuristic;
             }
