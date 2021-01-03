@@ -30,7 +30,7 @@ class CubeNode {
         this.visited = false
         this.closed = false
 
-        this.parent = null
+        //this.parent = null
 
         const default_blocks = {
             [`${vector.x + 1},${vector.y},${vector.z}`]: block_type.wall,

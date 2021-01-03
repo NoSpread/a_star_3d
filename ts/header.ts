@@ -3,8 +3,8 @@ export enum block_type {
     floor = 1,
     door = 2,
     ladder = 4,
-    sentinel = 6,
-    wall = 10
+    sentinel = 10,
+    wall = 10000
 }
 
 export interface i_coord {
@@ -36,4 +36,12 @@ export interface i_Score {
             [z: string]: number
         }
     } 
+}
+
+export const reverse_lookup = {
+    1: "floor",
+    2: "door",
+    4: "ladder",
+    10: "sentinel",
+    10000: "wall"
 }

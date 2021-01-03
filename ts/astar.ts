@@ -57,6 +57,7 @@ export function a_star(graph: i_coord, _start: CubeNode, _goal: CubeNode, h: any
             })
 
             if (!neighbor || neighbor.closed) continue
+            // if (graph[currNode.cString][neighbor.cString] === block_type.wall) continue  ---> no walls allowed
 
             const gScore = currNode.gScore + neighbor.calcCost(currNode)
             const visited = neighbor.visited

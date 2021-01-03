@@ -1,6 +1,7 @@
 import { import_data } from './parse'
 import { a_star } from './astar'
 import { CubeNode } from './CubeNode'
+import { reverse_lookup } from "./header";
 
 const data = import_data('data/S1_borg_cube.csv')
 //console.log(data)
@@ -22,7 +23,7 @@ const endNode = new CubeNode(end)
 
 const path = a_star(data, startNode, endNode, 0)
 
-for (const node of path) {
-    console.log(node.cString)
-    console.log("---->")
+for (const idx in path) {
+    console.log(path[idx].cString)
+    if (path[Number(idx) + 1]) console.log(`---- ${reverse_lookup[path[idx].neighbors[path[Number(idx) + 1].cString]]} --->`)
 }

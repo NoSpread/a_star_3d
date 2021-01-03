@@ -12,7 +12,6 @@ class CubeNode {
         this.gScore = Number.MAX_SAFE_INTEGER;
         this.visited = false;
         this.closed = false;
-        this.parent = null;
         const default_blocks = {
             [`${vector.x + 1},${vector.y},${vector.z}`]: header_1.block_type.wall,
             [`${vector.x - 1},${vector.y},${vector.z}`]: header_1.block_type.wall,

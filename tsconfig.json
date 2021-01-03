@@ -3,6 +3,9 @@
       "module": "commonjs",
       "target": "ESNext",
       "moduleResolution": "node",
+      "allowJs": true,
+      "checkJs": true,
+      "strictNullChecks": true,
       //"watch": true,
       "noImplicitAny": true,
       "removeComments": true,
@@ -12,5 +15,8 @@
     },
     "include": [
         "./ts/*"
+    ],
+    "exclude": [
+      "node_modules"
     ]
 }
