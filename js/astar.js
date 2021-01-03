@@ -56,10 +56,13 @@ function a_star(graph, _start, _goal, h) {
                 neighbor.gScore = gScore;
                 neighbor.fScore = neighbor.gScore + neighbor.heuristic;
             }
-            if (!visited)
+            if (!visited) {
                 pQ.push(neighbor);
+            }
+            else {
+                pQ.nrescore(neighbor);
+            }
         }
-        pQ.rescore((a, b) => { return a.fScore - b.fScore; });
     }
     return [];
 }

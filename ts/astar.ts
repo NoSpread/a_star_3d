@@ -1,11 +1,9 @@
-// nach wiki pseudocode
 import { i_coord, block_type, Path, i_Vector, i_Score, i_neighbors } from './header'
 import { CubeNode } from './CubeNode'
 import { PriorityQueue } from './PriorityQueue'
 
 export function a_star(graph: i_coord, _start: CubeNode, _goal: CubeNode, h: any) {
 
-    //const pq = new PriorityQueue()
     const pQ = new PriorityQueue<CubeNode>((a, b) => { return a.fScore < b.fScore })
     const nodes: CubeNode[] = []
 
@@ -44,7 +42,6 @@ export function a_star(graph: i_coord, _start: CubeNode, _goal: CubeNode, h: any
     pQ.push(_start)
     while (pQ.size > 0) {
 
-        //const currNode = pq.dequeue()
         const currNode = pQ.pop()
 
         if (currNode === _goal) {
@@ -72,10 +69,14 @@ export function a_star(graph: i_coord, _start: CubeNode, _goal: CubeNode, h: any
                 neighbor.fScore = neighbor.gScore + neighbor.heuristic
             }
 
-            if (!visited) pQ.push(neighbor)
+            if (!visited) {
+                pQ.push(neighbor) 
+            } else {
+                pQ.nrescore(neighbor)
+            }
         }
 
-        pQ.rescore((a,b) => { return a.fScore - b.fScore})
+        //pQ.rescore((a,b) => { return a.fScore - b.fScore})
     }
 
     return []

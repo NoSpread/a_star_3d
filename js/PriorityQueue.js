@@ -45,6 +45,19 @@ class PriorityQueue {
     rescore(fnSort) {
         this._heap.sort(fnSort);
     }
+    nrescore(value) {
+        const idx = this._heap.findIndex(element => {
+            return element === value;
+        });
+        const bottom = this.size - 1;
+        if (idx < bottom) {
+            this._swap(idx, bottom);
+        }
+        this._heap.pop();
+        this._siftDown();
+        this._heap.push(value);
+        this._siftUp();
+    }
     _greater(i, j) {
         return this._comparator(this._heap[i], this._heap[j]);
     }
