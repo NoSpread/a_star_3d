@@ -31,7 +31,7 @@ for (vector.x = -5; vector.x <= 5; vector.x++) {
 
             if (_start.vectorCompare(vector)) {
                 _start.gScore = 0
-                _start.fScore = CubeNode.manhatten(_start, _goal)
+                _start.fScore = CubeNode.manhattan(_start, _goal)
                 arr.push(_start)
             } else if (_goal.vectorCompare(vector)) {
                 arr.push(_goal)

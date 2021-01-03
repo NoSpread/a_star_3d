@@ -23,7 +23,7 @@ export function a_star(graph: i_coord, _start: CubeNode, _goal: CubeNode, h: any
 
                 if (_start.vectorCompare(vector)) {
                     _start.gScore = 0
-                    _start.fScore = CubeNode.manhatten(_start, _goal)
+                    _start.fScore = CubeNode.manhattan(_start, _goal)
                     _start.neighbors = graph[_start.cString]
 
                     nodes.push(_start)
@@ -43,9 +43,7 @@ export function a_star(graph: i_coord, _start: CubeNode, _goal: CubeNode, h: any
         }
     }
 
-
-    pQ.push(...nodes)
-
+    pQ.push(_start)
     while (pQ.size > 0) {
 
         //const currNode = pq.dequeue()
@@ -65,15 +63,18 @@ export function a_star(graph: i_coord, _start: CubeNode, _goal: CubeNode, h: any
 
             if (!neighbor || neighbor.closed) continue
 
-            const gScore = currNode.gScore + 1 // real cost here from neighbor to curr
+            const gScore = currNode.gScore + neighbor.calcCost(currNode)
             const visited = neighbor.visited
 
             if (!visited || gScore < neighbor.gScore) {
                 neighbor.visited = true
                 neighbor.parent = currNode
-                // set neighbor.gScore = gScore
-                neighbor.fScore = CubeNode.manhatten(neighbor, _goal) // + gScore
+                neighbor.heuristic = neighbor.heuristic || CubeNode.manhattan(neighbor, _goal)
+                neighbor.gScore = gScore
+                neighbor.fScore = neighbor.gScore + neighbor.heuristic
             }
+
+            if (!visited) pQ.push(neighbor)
         }
 
         pQ.rescore((a,b) => { return a.fScore - b.fScore})

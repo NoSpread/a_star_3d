@@ -16,7 +16,7 @@ function a_star(graph, _start, _goal, h) {
             for (vector.z = -15; vector.z <= 15; vector.z++) {
                 if (_start.vectorCompare(vector)) {
                     _start.gScore = 0;
-                    _start.fScore = class_1.CubeNode.manhatten(_start, _goal);
+                    _start.fScore = class_1.CubeNode.manhattan(_start, _goal);
                     _start.neighbors = graph[_start.cString];
                     nodes.push(_start);
                 }
@@ -34,7 +34,7 @@ function a_star(graph, _start, _goal, h) {
             }
         }
     }
-    pQ.push(...nodes);
+    pQ.push(_start);
     while (pQ.size > 0) {
         const currNode = pQ.pop();
         if (currNode === _goal) {
@@ -47,13 +47,17 @@ function a_star(graph, _start, _goal, h) {
             });
             if (!neighbor || neighbor.closed)
                 continue;
-            const gScore = currNode.gScore + 1;
+            const gScore = currNode.gScore + neighbor.calcCost(currNode);
             const visited = neighbor.visited;
             if (!visited || gScore < neighbor.gScore) {
                 neighbor.visited = true;
                 neighbor.parent = currNode;
-                neighbor.fScore = class_1.CubeNode.manhatten(neighbor, _goal);
+                neighbor.heuristic = neighbor.heuristic || class_1.CubeNode.manhattan(neighbor, _goal);
+                neighbor.gScore = gScore;
+                neighbor.fScore = neighbor.gScore + neighbor.heuristic;
             }
+            if (!visited)
+                pQ.push(neighbor);
         }
         pQ.rescore((a, b) => { return a.fScore - b.fScore; });
     }

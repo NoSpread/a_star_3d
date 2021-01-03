@@ -1,4 +1,4 @@
-import { i_neighbors, i_Vector } from './header'
+import { i_neighbors, i_Vector, block_type} from './header'
 
 class CubeNode {
 
@@ -12,6 +12,7 @@ class CubeNode {
     public closed: boolean
     public fScore: number
     public gScore: number
+    public heuristic: number
 
     public parent: CubeNode
     public neighbors: i_neighbors
@@ -30,10 +31,20 @@ class CubeNode {
         this.closed = false
 
         this.parent = null
-        this.neighbors = {}
+
+        const default_blocks = {
+            [`${vector.x + 1},${vector.y},${vector.z}`]: block_type.wall,
+            [`${vector.x - 1},${vector.y},${vector.z}`]: block_type.wall,
+            [`${vector.x},${vector.y + 1},${vector.z}`]: block_type.wall,
+            [`${vector.x},${vector.y - 1},${vector.z}`]: block_type.wall,
+            [`${vector.x},${vector.y},${vector.z + 1}`]: block_type.wall,
+            [`${vector.x},${vector.y},${vector.z - 1}`]: block_type.wall
+        }
+
+        this.neighbors = default_blocks
     }
 
-    get cString() {
+    get cString(): string {
         return this.coord_string
     }
 
@@ -44,7 +55,11 @@ class CubeNode {
         return false
     }
 
-    static manhatten(start: CubeNode, goal: CubeNode): number {
+    public calcCost(neighbor: CubeNode): number {
+        return this.neighbors[neighbor.cString]
+    }
+
+    static manhattan(start: CubeNode, goal: CubeNode): number {
         const d1 = Math.abs(start.x - goal.x)
         const d2 = Math.abs(start.y - goal.y)
         const d3 = Math.abs(start.z - goal.z)

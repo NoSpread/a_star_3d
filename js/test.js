@@ -25,7 +25,7 @@ for (vector.x = -5; vector.x <= 5; vector.x++) {
         for (vector.z = -5; vector.z <= 5; vector.z++) {
             if (_start.vectorCompare(vector)) {
                 _start.gScore = 0;
-                _start.fScore = class_1.CubeNode.manhatten(_start, _goal);
+                _start.fScore = class_1.CubeNode.manhattan(_start, _goal);
                 arr.push(_start);
             }
             else if (_goal.vectorCompare(vector)) {

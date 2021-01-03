@@ -1,12 +1,10 @@
 
 export enum block_type {
-    wall = 0,
     floor = 1,
     door = 2,
-    ladder = 3,
-    sentinel = 4,
-    end = 10,
-    start = -1
+    ladder = 4,
+    sentinel = 6,
+    wall = 10
 }
 
 export interface i_coord {
