@@ -22,6 +22,10 @@ class CubeNode {
 
     public status: Status
 
+    /**
+     * Creates a new node in the cubus
+     * @param vector Vector position of the node
+     */
     constructor(vector: i_Vector) {
         this.x = vector.x
         this.y = vector.y
@@ -36,18 +40,27 @@ class CubeNode {
 
         this.visited = false
         this.closed = false
-
-        //this.parent = null
     }
 
+    /**
+     * @returns a string representation of the coordinates
+     */
     get cString(): string {
         return this.coord_string
     }
 
+    /**
+     * @returns {i_Vector} vector representation of the coordinates
+     */
     get coord(): i_Vector {
         return this.vector
     }
 
+    /**
+     * Compares a vector and a node to find out if they are equal
+     * May be outdated since i added the coord getter
+     * @param vector vector to compare to current node
+     */
     public vectorCompare(vector: i_Vector): boolean {
         if (this.x === vector.x && this.y === vector.y && this.z === vector.z) {
             return true
@@ -55,6 +68,11 @@ class CubeNode {
         return false
     }
 
+    /**
+     * Calculates the cost needed to travel to a new node
+     * @param origin origin node
+     * @param neighbor neighbor node
+     */
     static calcCost(origin: CubeNode, neighbor: CubeNode): [Status, number] {
 
         const wayType = origin.neighbors[neighbor.cString]
@@ -122,6 +140,11 @@ class CubeNode {
         return [status, cost]
     }
 
+    /**
+     * Calculates the Manhattan distance in 3D
+     * @param start start node (current)
+     * @param goal goal node (goal node)
+     */
     static manhattan(start: CubeNode, goal: CubeNode): number {
         const d1 = Math.abs(start.x - goal.x)
         const d2 = Math.abs(start.y - goal.y)

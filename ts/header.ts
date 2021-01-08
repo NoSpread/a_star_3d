@@ -1,5 +1,9 @@
 
-export enum block_type {
+/**
+ * block type enum, the higher the value the more expensiv our 
+ * route will be
+ */
+enum block_type {
     floor = 1,
     door = 2,
     ladder = 5,
@@ -7,7 +11,10 @@ export enum block_type {
     wall = 100
 }
 
-export const reverse_block_type = {
+/**
+ * used for "fancy" visuals, so we can find the string
+ */
+const reverse_block_type = {
     1: "floor",
     2: "door",
     5: "ladder",
@@ -15,40 +22,38 @@ export const reverse_block_type = {
     100: "wall"
 }
 
-export interface i_coord {
-    [coord: string]: { 
-        [coord: string]: block_type 
-    } 
+/**
+ * the csv export is build on the i_coord interface
+ * it explains how the output will be structured
+ * 
+ * [0,0,0] : { [1,0,0]: 1 } -> from [0,0,0] to [1,0,0] we need to walk normal
+ */
+interface i_coord {
+    [coord: string]: i_neighbors 
 }
 
-export interface i_neighbors {
+// see the documentation above, its just the inner part of it
+interface i_neighbors {
     [coord: string]: block_type
 }
 
-
-export type Path = {
-    x: number,
-    y: number,
-    z: number
-}
-
-export interface i_Vector {
+/**
+ * vector representation of a 3D coordinate
+ */
+interface i_Vector {
     x: number
     y: number
     z: number
 }
 
-export interface i_Score { 
-    [x: string]: {
-        [y: string]: {
-            [z: string]: number
-        }
-    } 
-}
-
-export type Status = {
+/**
+ * status type used to keep track of all details
+ */
+type Status = {
     energy: number,
     blaster: number,
     time: number,
     cooldown: number
 }
+
+export { block_type, reverse_block_type, i_coord, i_neighbors, i_Vector, Status}

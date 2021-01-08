@@ -1,8 +1,12 @@
 import * as fs from 'fs'
 import * as _ from 'lodash'
-import {i_coord, block_type, reverse_block_type, i_Vector} from './header'
+import {i_coord, block_type, i_Vector} from './header'
 
-export function import_data(path: string): i_coord {
+/**
+ * Parse the csv file to find all node connections
+ * @param path path to csv
+ */
+function import_data(path: string): i_coord {
     const csv = fs.readFileSync(path).toString().split('\r\n')
     csv.shift()
     
@@ -49,6 +53,8 @@ export function import_data(path: string): i_coord {
         data[`${x1},${y1},${z1}`][`${x2},${y2},${z2}`] = walltype
         data[`${x2},${y2},${z2}`][`${x1},${y1},${z1}`] = walltype
     }
-    
+
     return data
 }
+
+export { import_data }
