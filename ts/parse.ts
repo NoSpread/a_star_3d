@@ -20,8 +20,14 @@ export function import_data(path: string): i_coord {
             [`${x1},${y1},${z1 - 1}`]: block_type.wall
         }
 
+        Object.keys(default_blocks).forEach(key => {
+            if (key.includes('16')) {
+                delete default_blocks[key]
+            }
+        })
+
         // Eintragen des gegebenen Übergangs von xyz1 nach xyz2
-        default_blocks[`${x2},${y2},${z2}`] = door ? block_type.door : open ? block_type.floor : sentinel ? block_type.sentinel : ladder ? block_type.ladder : block_type.wall
+        default_blocks[`${x2},${y2},${z2}`] = sentinel ? block_type.sentinel : open ? block_type.floor : door ? block_type.door : ladder ? block_type.ladder : block_type.wall
 
         data[`${x1},${y1},${z1}`] = default_blocks
     }

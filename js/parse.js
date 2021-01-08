@@ -18,7 +18,12 @@ function import_data(path) {
             [`${x1},${y1},${z1 + 1}`]: header_1.block_type.wall,
             [`${x1},${y1},${z1 - 1}`]: header_1.block_type.wall
         };
-        default_blocks[`${x2},${y2},${z2}`] = door ? header_1.block_type.door : open ? header_1.block_type.floor : sentinel ? header_1.block_type.sentinel : ladder ? header_1.block_type.ladder : header_1.block_type.wall;
+        Object.keys(default_blocks).forEach(key => {
+            if (key.includes('16')) {
+                delete default_blocks[key];
+            }
+        });
+        default_blocks[`${x2},${y2},${z2}`] = sentinel ? header_1.block_type.sentinel : open ? header_1.block_type.floor : door ? header_1.block_type.door : ladder ? header_1.block_type.ladder : header_1.block_type.wall;
         data[`${x1},${y1},${z1}`] = default_blocks;
     }
     for (const coord of Object.keys(data)) {
