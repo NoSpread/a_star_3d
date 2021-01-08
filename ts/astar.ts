@@ -1,8 +1,9 @@
-import { i_coord, block_type, Path, i_Vector, i_Score, i_neighbors } from './header'
+import { i_coord, block_type, Path, i_Vector, i_Score, i_neighbors, Status } from './header'
 import { CubeNode } from './CubeNode'
 import { PriorityQueue } from './PriorityQueue'
+import * as _ from 'lodash'
 
-export function a_star(graph: i_coord, _start: CubeNode, _goal: CubeNode, h: any) {
+export function a_star(graph: i_coord, _start: CubeNode, _goal: CubeNode): CubeNode[] {
 
     const pQ = new PriorityQueue<CubeNode>((a, b) => { return a.fScore < b.fScore })
     const nodes: CubeNode[] = []
@@ -19,7 +20,7 @@ export function a_star(graph: i_coord, _start: CubeNode, _goal: CubeNode, h: any
 
                 if (_start.vectorCompare(vector)) {
                     _start.gScore = 0
-                    _start.fScore = CubeNode.manhattan(_start, _goal)
+                    _start.heuristic = CubeNode.manhattan(_start, _goal)
                     _start.neighbors = graph[_start.cString]
 
                     nodes.push(_start)
@@ -44,10 +45,11 @@ export function a_star(graph: i_coord, _start: CubeNode, _goal: CubeNode, h: any
 
         const currNode = pQ.pop()
 
+        console.log("------------------")
+
         if (currNode === _goal) {
             return pathTo(currNode)
         }
-
 
         currNode.closed = true
 
@@ -57,23 +59,35 @@ export function a_star(graph: i_coord, _start: CubeNode, _goal: CubeNode, h: any
             })
 
             if (!neighbor || neighbor.closed) continue
-            // if (graph[currNode.cString][neighbor.cString] === block_type.wall) continue  ---> no walls allowed
+            
 
-            const gScore = currNode.gScore + neighbor.calcCost(currNode)
+            neighbor.status = _.cloneDeep(currNode.status)
+            const [n_status, cost] = currNode.calcCost(neighbor)
+
+            //const clone_neigbor = _.cloneDeep(neighbor)
+            //clone_neigbor.status = currNode.status
+            //const [n_status, cost] = currNode.calcCost(clone_neigbor) // get temp cost
+
+            if (cost === Number.MAX_SAFE_INTEGER) continue // no blasters etc
+
+            const gScore = currNode.gScore + cost
             const visited = neighbor.visited
 
             if (!visited || gScore < neighbor.gScore) {
                 neighbor.visited = true
                 neighbor.parent = currNode
                 neighbor.heuristic = neighbor.heuristic || CubeNode.manhattan(neighbor, _goal)
-                neighbor.gScore = gScore
+                neighbor.gScore = gScore 
+                neighbor.status = n_status // apply changes
                 neighbor.fScore = neighbor.gScore + neighbor.heuristic
-            }
 
-            if (!visited) {
-                pQ.push(neighbor) 
-            } else {
-                pQ.nrescore(neighbor)
+                console.log(currNode.cString, "\t--->", neighbor.cString, "\t; gScore:", neighbor.gScore, "status:", JSON.stringify(neighbor.status))
+
+                if (!visited) {
+                    pQ.push(neighbor) 
+                } else {
+                    pQ.nrescore(neighbor)
+                }
             }
         }
 

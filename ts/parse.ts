@@ -1,5 +1,5 @@
 import * as fs from 'fs'
-import {i_coord, block_type} from './header'
+import {i_coord, block_type, reverse_block_type} from './header'
 
 export function import_data(path: string): i_coord {
     const csv = fs.readFileSync(path).toString().split('\r\n')
@@ -39,7 +39,7 @@ export function import_data(path: string): i_coord {
         // eine Verbindung von [x2, y2, z2] nach [x1, y1, z1]
         for (const _coord of Object.keys(directions)) {
             if (data[_coord]) {
-                if (data[_coord][coord]) {
+                if (data[_coord][coord] != block_type.wall) {
                     data[coord][_coord] = data[_coord][coord]
                 } else if (data[coord][_coord]) {
                     data[_coord][coord] = data[coord][_coord]
