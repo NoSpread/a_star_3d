@@ -45,7 +45,26 @@ export function a_star(graph: i_coord, _start: CubeNode, _goal: CubeNode): CubeN
         //console.log("------------------")
 
         if (currNode === _goal) {
-            return pathTo(currNode)
+            
+            const vector: i_Vector = {
+                x: 0,
+                y: 0,
+                z: 0
+            }
+            const vinculum = new CubeNode(vector)
+
+            vinculum.parent = currNode
+            
+            const status = _.cloneDeep(currNode.status)
+            if (currNode.status.blaster > 0) {
+                status.blaster--
+                status.time++
+            } else {
+                status.time += 5
+            }
+            vinculum.status = status
+
+            return pathTo(_start, vinculum)
         }
 
         currNode.closed = true
@@ -57,20 +76,7 @@ export function a_star(graph: i_coord, _start: CubeNode, _goal: CubeNode): CubeN
 
             if (!neighbor || neighbor.closed) continue
 
-
-            // working:
-            //neighbor.status = _.cloneDeep(currNode.status)
-            //const [n_status, cost] = currNode.calcCost(neighbor)
-
-            //test:
             const [n_status, cost] = CubeNode.calcCost(currNode, neighbor)
-            //const clone = _.cloneDeep(neighbor)
-            //clone.status = _.cloneDeep(currNode.status)
-            //const [n_status, cost] = currNode.calcCost(clone)
-            
-            //const clone_neigbor = _.cloneDeep(neighbor)
-            //clone_neigbor.status = currNode.status
-            //const [n_status, cost] = currNode.calcCost(clone_neigbor) // get temp cost
 
             if (cost === Number.MAX_SAFE_INTEGER) continue // no blasters etc
 
@@ -85,8 +91,6 @@ export function a_star(graph: i_coord, _start: CubeNode, _goal: CubeNode): CubeN
                 neighbor.status = n_status // apply changes
                 neighbor.fScore = neighbor.gScore + neighbor.heuristic
 
-                //console.log(currNode.cString, "--->", neighbor.cString, "; gScore:", neighbor.gScore, "status:", JSON.stringify(neighbor.status))
-
                 if (!visited) {
                     pQ.push(neighbor)
                 } else {
@@ -94,14 +98,12 @@ export function a_star(graph: i_coord, _start: CubeNode, _goal: CubeNode): CubeN
                 }
             }
         }
-
-        //pQ.rescore((a,b) => { return a.fScore - b.fScore})
     }
 
     return []
 }
 
-function pathTo(node: CubeNode) {
+function pathTo(start: CubeNode, node: CubeNode) {
     let curr: CubeNode = node
     let path: CubeNode[] = []
 
@@ -109,6 +111,7 @@ function pathTo(node: CubeNode) {
         path.unshift(curr)
         curr = curr.parent
     }
+    path.unshift(start)
 
     return path
 }

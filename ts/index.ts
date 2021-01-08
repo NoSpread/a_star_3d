@@ -36,8 +36,8 @@ for (const idx in path) {
     if (path[Number(idx) + 1]) {
         const next = path[Number(idx) + 1]
         const waytype = current.neighbors[next.cString]
-        const waystr = reverse_block_type[waytype]
+        const waystr = reverse_block_type[waytype] ? reverse_block_type[waytype] : "vinculum"
 
-        console.log(`${current.cString} --> ${waystr} --> ${next.cString}: (time: ${next.status.time}; blaster: ${next.status.blaster}; energy: ${next.status.energy}; gScore: ${next.gScore})`)
+        console.log(`${current.cString} --> ${waystr} --> ${next.cString}: (time: ${next.status.time}; blaster: ${next.status.blaster}; energy: ${next.status.energy}; cooldown: ${next.status.cooldown}`)
     }
 }
