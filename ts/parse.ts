@@ -8,14 +8,17 @@ import {i_coord, block_type, i_Vector} from './header'
  */
 function import_data(path: string): i_coord {
     const csv = fs.readFileSync(path).toString().split('\r\n')
+
+    // remove first row (header)
     csv.shift()
     
     const data: i_coord = {}
 
+    // default 0 vector, easier to read in for loops
     const vector: i_Vector = {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        x: 0,
+        y: 0,
+        z: 0
     }
 
     for (vector.x = -15; vector.x <= 15; vector.x++) {
@@ -23,6 +26,8 @@ function import_data(path: string): i_coord {
             for (vector.z = -15; vector.z <= 15; vector.z++) {
 
                 const coord = _.cloneDeep(vector)
+
+                // default is wall, everthing else is defined in the csv
                 const default_blocks = {
                     [`${coord.x + 1},${coord.y},${coord.z}`]: block_type.wall,
                     [`${coord.x - 1},${coord.y},${coord.z}`]: block_type.wall,
@@ -45,10 +50,10 @@ function import_data(path: string): i_coord {
 
 
     for (const row of csv) {
-        // alle Strings die aus der csv eingelesen wurden sind Zahlen, seprariert mit einem Semicolon
+        // split strings from csv in individual constants
         const [x1, y1, z1, x2, y2, z2, door, open, sentinel, ladder] = row.split(';').map(function (x) { if (x) return parseInt(x); return 0 })
 
-        // Eintragen des gegebenen Übergangs von xyz1 nach xyz2
+        // make it able to move in both directions
         const walltype = sentinel ? block_type.sentinel : open ? block_type.floor : door ? block_type.door : ladder ? block_type.ladder : block_type.wall
         data[`${x1},${y1},${z1}`][`${x2},${y2},${z2}`] = walltype
         data[`${x2},${y2},${z2}`][`${x1},${y1},${z1}`] = walltype
