@@ -7,7 +7,10 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "fs": "^0.0.1-security"
+    "fs": "^0.0.1-security",
+    "lodash": "^4.17.20"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/lodash": "^4.14.167"
+  }
 }
