@@ -1,10 +1,10 @@
 {
-  "name": "KI_A_STAR",
+  "name": "a_star_3d",
   "version": "1.0.0",
-  "description": "3D A* Algorithm",
-  "main": "index.js",
-  "author": "Lucas Schneider",
-  "license": "MIT",
+  "description": "A* Algorithm in 3D",
+  "main": "js/index.js",
+  "author": "NoSpread <nospread@pm.me>",
+  "license": "GPL-3.0-or-later",
   "private": true,
   "dependencies": {
     "fs": "^0.0.1-security",
@@ -12,5 +12,9 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.14.167"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node js/index.js"
   }
 }
