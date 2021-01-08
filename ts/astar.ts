@@ -30,10 +30,7 @@ export function a_star(graph: i_coord, _start: CubeNode, _goal: CubeNode): CubeN
                     nodes.push(_goal)
                 } else {
                     const node = new CubeNode(vector)
-                    if (graph[node.cString]) {
-                        node.neighbors = graph[node.cString]
-                    }
-
+                    node.neighbors = graph[node.cString]
                     nodes.push(node)
                 }
             }
@@ -45,7 +42,7 @@ export function a_star(graph: i_coord, _start: CubeNode, _goal: CubeNode): CubeN
 
         const currNode = pQ.pop()
 
-        console.log("------------------")
+        //console.log("------------------")
 
         if (currNode === _goal) {
             return pathTo(currNode)
@@ -59,11 +56,18 @@ export function a_star(graph: i_coord, _start: CubeNode, _goal: CubeNode): CubeN
             })
 
             if (!neighbor || neighbor.closed) continue
+
+
+            // working:
+            //neighbor.status = _.cloneDeep(currNode.status)
+            //const [n_status, cost] = currNode.calcCost(neighbor)
+
+            //test:
+            const [n_status, cost] = CubeNode.calcCost(currNode, neighbor)
+            //const clone = _.cloneDeep(neighbor)
+            //clone.status = _.cloneDeep(currNode.status)
+            //const [n_status, cost] = currNode.calcCost(clone)
             
-
-            neighbor.status = _.cloneDeep(currNode.status)
-            const [n_status, cost] = currNode.calcCost(neighbor)
-
             //const clone_neigbor = _.cloneDeep(neighbor)
             //clone_neigbor.status = currNode.status
             //const [n_status, cost] = currNode.calcCost(clone_neigbor) // get temp cost
@@ -77,14 +81,14 @@ export function a_star(graph: i_coord, _start: CubeNode, _goal: CubeNode): CubeN
                 neighbor.visited = true
                 neighbor.parent = currNode
                 neighbor.heuristic = neighbor.heuristic || CubeNode.manhattan(neighbor, _goal)
-                neighbor.gScore = gScore 
+                neighbor.gScore = gScore
                 neighbor.status = n_status // apply changes
                 neighbor.fScore = neighbor.gScore + neighbor.heuristic
 
-                console.log(currNode.cString, "\t--->", neighbor.cString, "\t; gScore:", neighbor.gScore, "status:", JSON.stringify(neighbor.status))
+                //console.log(currNode.cString, "--->", neighbor.cString, "; gScore:", neighbor.gScore, "status:", JSON.stringify(neighbor.status))
 
                 if (!visited) {
-                    pQ.push(neighbor) 
+                    pQ.push(neighbor)
                 } else {
                     pQ.nrescore(neighbor)
                 }

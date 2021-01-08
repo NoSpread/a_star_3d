@@ -38,22 +38,6 @@ class CubeNode {
         this.closed = false
 
         //this.parent = null
-
-        const default_blocks = {
-            [`${vector.x + 1},${vector.y},${vector.z}`]: block_type.wall,
-            [`${vector.x - 1},${vector.y},${vector.z}`]: block_type.wall,
-            [`${vector.x},${vector.y + 1},${vector.z}`]: block_type.wall,
-            [`${vector.x},${vector.y - 1},${vector.z}`]: block_type.wall,
-            [`${vector.x},${vector.y},${vector.z + 1}`]: block_type.wall,
-            [`${vector.x},${vector.y},${vector.z - 1}`]: block_type.wall
-        }
-        Object.keys(default_blocks).forEach(key => {
-            if (key.includes('16')) {
-                delete default_blocks[key]
-            }
-        })
-
-        this.neighbors = default_blocks
     }
 
     get cString(): string {
@@ -71,10 +55,11 @@ class CubeNode {
         return false
     }
 
-    public calcCost(neighbor: CubeNode): [Status, number] {
+    static calcCost(origin: CubeNode, neighbor: CubeNode): [Status, number] {
 
-        const wayType = this.neighbors[neighbor.cString]
-        const status = _.cloneDeep(neighbor.status)
+        const wayType = origin.neighbors[neighbor.cString]
+        const status = _.cloneDeep(origin.status)
+
         let time = status.time
         let energy = status.energy
         let cooldown = status.cooldown
@@ -94,7 +79,7 @@ class CubeNode {
                 break
 
             case block_type.ladder:
-                if (this.z > neighbor.coord.z) {
+                if (origin.coord.z > neighbor.coord.z) {
                     time += 0.5
                 } else {
                     time += 2
