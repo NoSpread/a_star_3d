@@ -111,8 +111,6 @@ class CubeNode {
                     cooldown = 5
                     
                 } else if (cooldown > 0 && energy > 0){
-                    // --> since everything is a straight line we have to wait here
-        
                     time += 3 + cooldown
                     energy -= 1
                     cooldown = 5
@@ -127,6 +125,7 @@ class CubeNode {
                     time += 3
                     blaster -= 1
                 } else {
+                    // blaster empty, no way
                     cost = Number.MAX_SAFE_INTEGER
                 }
                 break

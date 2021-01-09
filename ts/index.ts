@@ -1,7 +1,9 @@
 import { import_data } from './parse'
 import { a_star } from './astar'
 import { CubeNode } from './CubeNode'
-import { Status, reverse_block_type } from "./header";
+import { Status, reverse_block_type } from "./header"
+
+import * as chalk from 'chalk'
 
 /**
  * data import from csv
@@ -50,6 +52,9 @@ const endNode = new CubeNode(end)
  */
 const path = a_star(data, startNode, endNode)
 
+
+console.log(`Starting with: ${JSON.stringify(status)}`)
+
 /**
  * output the path we need to take to reach the center, no output would mean no route
  */
@@ -60,6 +65,6 @@ for (const idx in path) {
         const waytype = current.neighbors[next.cString]
         const waystr = reverse_block_type[waytype] ? reverse_block_type[waytype] : "vinculum"
 
-        console.log(`${current.cString} --> ${waystr} --> ${next.cString}: (time: ${next.status.time}; blaster: ${next.status.blaster}; energy: ${next.status.energy}; cooldown: ${next.status.cooldown}`)
+        console.log(` [${chalk.red(current.cString)}]\t-->\t${chalk.magenta(waystr)}    \t-->\t[${chalk.green(next.cString)}]:\t (` + chalk` {yellow time: ${next.status.time};} {cyan blaster: ${next.status.blaster};} {white energy: ${next.status.energy};} {blue cooldown: ${next.status.cooldown}} )`)
     }
 }
