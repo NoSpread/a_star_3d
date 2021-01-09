@@ -5,7 +5,7 @@
 ```
 yarn .
 yarn build
-yarn run start
+yarn start
 ```
 
 ## Details
