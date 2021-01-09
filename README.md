@@ -10,4 +10,4 @@ yarn start
 
 ## Details
 
-The csv file is saves in /data, important files are in /ts/index.ts, change details here if needed.
+The csv file is saved in /data, important files are in /ts/index.ts, change details here if needed.
