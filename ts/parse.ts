@@ -7,7 +7,15 @@ import {i_coord, block_type, i_Vector} from './header'
  * @param path path to csv
  */
 function import_data(path: string): i_coord {
-    const csv = fs.readFileSync(path).toString().split('\r\n')
+    const csv_raw = fs.readFileSync(path).toString()
+
+    let csv: string[]
+
+    if ( csv_raw.includes('\r\n')) {
+        csv = csv_raw.split('\r\n')
+    } else {
+        csv = csv_raw.split('\n')
+    }
 
     // remove first row (header)
     csv.shift()
@@ -51,7 +59,7 @@ function import_data(path: string): i_coord {
 
     for (const row of csv) {
         // split strings from csv in individual constants
-        const [x1, y1, z1, x2, y2, z2, door, open, sentinel, ladder] = row.split(';').map(function (x) { if (x) return parseInt(x); return 0 })
+        const [x1, y1, z1, x2, y2, z2, door, open, sentinel, ladder] = row.split(';').map(function (x: string) { if (x) return parseInt(x); return 0 })
 
         // make it able to move in both directions
         const walltype = sentinel ? block_type.sentinel : open ? block_type.floor : door ? block_type.door : ladder ? block_type.ladder : block_type.wall
