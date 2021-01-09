@@ -98,7 +98,12 @@ class CubeNode {
 
             case block_type.ladder:
                 if (origin.coord.z > neighbor.coord.z) {
-                    time += 0.5
+                    if (blaster > 0) {
+                        time += 2
+                    } else {
+                        cost--
+                        time += 0.5
+                    }
                 } else {
                     time += 2
                 }
@@ -114,6 +119,7 @@ class CubeNode {
                     time += 3 + cooldown
                     energy -= 1
                     cooldown = 5
+                    cost += cooldown
                 } else {
                     // blaster empty, no way
                     cost = Number.MAX_SAFE_INTEGER
