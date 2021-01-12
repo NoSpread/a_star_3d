@@ -2,10 +2,21 @@
 
 ## Installation
 
+Before you can run the build process you need to install typescript.
+You can do this with `npm i -g typescript` or `yarn global add typescript`.
+
+Yarn installation:
 ```
-yarn .
+yarn install
 yarn build
 yarn start
+```
+
+NPM alternative:
+```
+npm install
+npm run build
+npm run start
 ```
 
 ## Details
