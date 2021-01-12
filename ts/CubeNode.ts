@@ -1,5 +1,6 @@
 import { i_neighbors, i_Vector, block_type, Status} from './header'
 import * as _ from 'lodash'
+import { stat } from 'fs'
 
 class CubeNode {
 
@@ -78,11 +79,7 @@ class CubeNode {
         const wayType = origin.neighbors[neighbor.cString]
         const status = _.cloneDeep(origin.status)
 
-        let time = status.time
-        let energy = status.energy
-        let cooldown = status.cooldown
-        let blaster = status.blaster
-
+        let { time, energy, cooldown, blaster} = status
         let cost = wayType
 
         if (cooldown > 0) cooldown -= 1
