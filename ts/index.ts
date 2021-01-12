@@ -1,7 +1,7 @@
 import { import_data } from './parse'
 import { a_star } from './astar'
 import { CubeNode } from './CubeNode'
-import { Status, reverse_block_type } from "./header"
+import { Status, reverse_block_type, i_Vector } from "./header"
 
 import * as chalk from 'chalk'
 
@@ -13,7 +13,7 @@ const data = import_data('data/S1_borg_cube.csv')
 /**
  * start node, entrypoint for a* algorithm
  */
-const start = {
+const start: i_Vector = {
     x: 15,
     y: -1,
     z: -6
@@ -39,7 +39,7 @@ startNode.status = status
 /**
  * end node, our goal
  */
-const end = {
+const end: i_Vector = {
     x: 0,
     y: 0,
     z: 0
